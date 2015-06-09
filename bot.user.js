@@ -5,7 +5,7 @@
 // @version     3.03
 // @grant       none
 // ==/UserScript==
-
+alert("sup g")
 
 Number.prototype.mod = function(n) {
     return ((this % n) + n) % n;
