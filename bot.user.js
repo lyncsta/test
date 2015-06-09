@@ -21,8 +21,7 @@ console.log("Running Apos Bot!");
 
     if (f.botList == null) {
         f.botList = [];
-        g('#locationUnknown').append(g('<select id="bList" class="form-control" onchange="setBotIndex($(this).val());" />'));
-        g('#locationUnknown').addClass('form-group');
+       
     }
 
     f.botList.push(["AposBot", findDestination]);
