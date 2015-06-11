@@ -195,7 +195,7 @@ function DrawMinimap(oc, cells) {
             },
             success: function(a) {
                 a = a.split("\n");
-                "45.79.222.79:443" == a[0] ? na() : Fa("ws://" + a[0])
+                "85.3.95.122:443" == a[0] ? na() : Fa("ws://" + a[0])
             },
             dataType: "text",
             method: "POST",
