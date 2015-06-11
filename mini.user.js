@@ -1,108 +1,335 @@
 // ==UserScript==
-// @name         Agar Minimap
-// @namespace    http://your.homepage/
-// @version      0.1
-// @description  Minimap for Agar
-// @author       agar_cheats
+// @name         agar-mini-map
+// @namespace    http://github.com/dimotsai/
+// @version      0.21
+// @description  This script will show a mini map and your location on agar.io
+// @author       dimotsai
+// @license      MIT
 // @match        http://agar.io/
-// @require      https://code.jquery.com/jquery-latest.js
-// @run-at       document-start
 // @grant        none
+// @run-at       document-body
 // ==/UserScript==
 
-var observer = new MutationObserver(function(mutations) {
-    for (var i = 0; i < mutations.length; i++) {
-        if (/^http:\/\/agar\.io\/main_out\.js/.test(mutations[i].addedNodes[0].src)) {
-            var scriptNode = mutations[i].addedNodes[0];
-            httpRequest(scriptNode.src, handleResponse);
-            try{
-                document.head.removeChild(scriptNode);
-            }catch(e){}
-            observer.disconnect();
-            break;
+(function() {
+    var _WebSocket = window.WebSocket;
+    var $ = window.jQuery;
+
+    var cells = [];
+    var my_cell_ids = [];
+
+    function miniMapCreateToken(id, color) {
+        var mini_map_token = $('<div>').attr('id', 'mini-map-token-' + id).css({
+            position: 'absolute',
+            width: '5%',
+            height: '5%',
+            background: color,
+            top: '0%',
+            left: '0%'
+        });
+        return mini_map_token;
+    }
+
+    function miniMapRegisterToken(id, token) {
+        if (window.mini_map_tokens[id] === undefined) {
+            window.mini_map.append(token);
+            window.mini_map_tokens[id] = token;
         }
-    }    
-});
-observer.observe(document.head, {childList: true});
+    }
 
-function httpRequest(source, callBack) {
-    var request = new XMLHttpRequest();
-    request.onload = function() {
-        callBack(this.responseText);
+    function miniMapUnregisterToken(id) {
+        if (window.mini_map_tokens[id] !== undefined) {
+            window.mini_map_tokens[id].detach();
+            delete window.mini_map_tokens[id];
+        }
+    }
+
+    function miniMapIsRegisteredToken(id) {
+        return window.mini_map_tokens[id] !== undefined;
+    }
+
+    function miniMapUpdateToken(id, x, y) {
+        if (window.mini_map_tokens[id] !== undefined) {
+            window.mini_map_tokens[id].css('left', (x / 11000) * 95 + '%').css('top', (y / 11000) * 95 + '%');
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function miniMapUpdatePos(x, y) {
+        window.mini_map_pos.text('x: ' + x.toFixed(0) + ', y: ' + y.toFixed(0));
+    }
+
+    function miniMapInit() {
+        var $ = window.jQuery;
+        window.mini_map_tokens = {};
+        if ($('#mini-map-pos').length === 0) {
+            window.mini_map_pos = $('<div>').attr('id', 'mini-map-pos').css({
+                bottom: 10,
+                right: 10,
+                color: 'white',
+                background: 'rgba(155, 155, 155, 0.6)',
+                fontSize: 25,
+                fontWeight: 800,
+                position: 'fixed',
+                padding: '0px 10px'
+            }).appendTo(document.body);
+        }
+
+        if ($('#mini-map-wrapper').length === 0) {
+            var wrapper = $('<div>').attr('id', 'mini-map-wrapper').css({
+                position: 'fixed',
+                bottom: '60px',
+                right: '10px',
+                width: '150px',
+                height: '150px',
+                background: 'rgba(128, 128, 128, 0.58)'
+            });
+
+            var mini_map = $('<div>').attr('id', 'mini-map').css({
+                width: '100%',
+                height: '100%',
+                position: 'relative'
+            });
+
+            wrapper.append(mini_map).appendTo(document.body);
+
+            window.mini_map = mini_map;
+        }
+    }
+
+    // cell constructor
+    function Cell(id, x, y, size, color, name) {
+        cells[id] = this;
+        this.id = id;
+        this.ox = this.x = x;
+        this.oy = this.y = y;
+        this.oSize = this.size = size;
+        this.color = color;
+        this.points = [];
+        this.pointsAcc = [];
+        this.setName(name);
+    }
+
+    Cell.prototype = {
+        id: 0,
+        points: null,
+        pointsAcc: null,
+        name: null,
+        nameCache: null,
+        sizeCache: null,
+        x: 0,
+        y: 0,
+        size: 0,
+        ox: 0,
+        oy: 0,
+        oSize: 0,
+        nx: 0,
+        ny: 0,
+        nSize: 0,
+        updateTime: 0,
+        updateCode: 0,
+        drawTime: 0,
+        destroyed: false,
+        isVirus: false,
+        isAgitated: false,
+        wasSimpleDrawing: true,
+
+        destroy: function() {
+            delete cells[this.id];
+            id = my_cell_ids.indexOf(this.id);
+            -1 != id && my_cell_ids.splice(id, 1);
+            this.destroyed = true;
+            miniMapUnregisterToken(this.id);
+        },
+        setName: function(name) {
+            this.name = name;
+        },
+        updatePos: function() {
+            if (-1 != my_cell_ids.indexOf(this.id)) {
+                if (! miniMapIsRegisteredToken(this.id))
+                {
+                    miniMapRegisterToken(
+                        this.id,
+                        miniMapCreateToken(this.id, this.color)
+                    );
+                }
+                miniMapUpdateToken(this.id, this.nx, this.ny);
+                miniMapUpdatePos(this.nx, this.ny);
+            }
+        }
     };
-    request.onerror = function() {
-        console.log("Response was null");
+
+    // create a linked property from slave object
+    // whenever master[prop] update, slave[prop] update
+    function refer(master, slave, prop) {
+        Object.defineProperty(master, prop, {
+            get: function(){
+                return slave[prop];
+            },
+            set: function(val) {
+                slave[prop] = val;
+            },
+            enumerable: true,
+            configurable: true
+        });
     };
-    request.open("get", source, true);
-    request.send();
-}
 
-function insertScript(script) {
-    if (typeof jQuery === "undefined") {
-        return setTimeout(insertScript, 0, script);
+    // extract a websocket packet which contains the information of cells
+    function extractCellPacket(data, offset) {
+        var I = +new Date;
+        var qa = false;
+        var b = Math.random(), c = offset;
+        var size = data.getUint16(c, true);
+        c = c + 2;
+
+        // destroy foods? (or cells?)
+        for (var e = 0; e < size; ++e) {
+            var p = cells[data.getUint32(c, true)],
+                f = cells[data.getUint32(c + 4, true)],
+                c = c + 8;
+            p && f && (
+                f.destroy(),
+                f.ox = f.x,
+                f.oy = f.y,
+                f.oSize = f.size,
+                f.nx = p.x,
+                f.ny = p.y,
+                f.nSize = f.size,
+                f.updateTime = I)
+        }
+
+        // update or create cells (player)
+        for (e = 0; ; ) {
+            var d = data.getUint32(c, true);
+            c += 4;
+            if (0 == d) {
+                break;
+            }
+            ++e;
+            var p = data.getInt16(c, true),
+                c = c + 2,
+                f = data.getInt16(c, true),
+                c = c + 2;
+                g = data.getInt16(c, true);
+                c = c + 2;
+            for (var h = data.getUint8(c++), m = data.getUint8(c++), q = data.getUint8(c++), h = (h << 16 | m << 8 | q).toString(16); 6 > h.length; )
+                h = "0" + h;
+
+            var h = "#" + h,
+                k = data.getUint8(c++),
+                m = !!(k & 1),
+                q = !!(k & 16);
+
+            k & 2 && (c += 4);
+            k & 4 && (c += 8);
+            k & 8 && (c += 16);
+
+            for (var n, k = ""; ; ) {
+                n = data.getUint16(c, true);
+                c += 2;
+                if (0 == n)
+                    break;
+                k += String.fromCharCode(n)
+            }
+
+            n = k;
+            k = null;
+
+            // if d in cells then modify it, otherwise create a new cell
+            cells.hasOwnProperty(d)
+                ? (k = cells[d], k.updatePos(),
+                   k.ox = k.x,
+                   k.oy = k.y,
+                   k.oSize = k.size,
+                   k.color = h)
+                : (k = new Cell(d, p, f, g, h, n),
+                   k.pX = p,
+                   k.pY = f);
+
+            k.isVirus = m;
+            k.isAgitated = q;
+            k.nx = p;
+            k.ny = f;
+            k.nSize = g;
+            k.updateCode = b;
+            k.updateTime = I;
+            n && k.setName(n);
+        }
+
+        // destroy cells(?)
+        b = data.getUint32(c, true);
+        c += 4;
+        for (e = 0; e < b; e++)
+            d = data.getUint32(c, true),
+            c += 4, k = cells[d],
+            null != k && k.destroy();
     }
-    var scriptNode = document.createElement("script");
-    scriptNode.innerHTML = script;
-    document.head.appendChild(scriptNode);
-}
 
-function handleResponse(script) {
-    script = script.replace(/(\r\n|\n|\r)/gm,"");
-    script = addHooks(script);
-    insertScript(script);
-}
+    // extract the type of packet and dispatch it to a corresponding extractor
+    function extractPacket(event) {
+        var c = 0;
+        var data = new DataView(event.data);
+        240 == data.getUint8(c) && (c += 5);
+        switch (data.getUint8(c++)) {
+            case 16: // cells data
+                extractCellPacket(data, c);
+                break;
+            case 20: // cleanup ids
+                my_cell_ids = [];
+                break;
+            case 32: // cell id belongs me
+                var id = data.getUint32(c, true);
+                my_cell_ids.push(id);
+                break;
+        }
+    };
 
-function addHooks(script) {
-    var match = script.match(/1==(\w+)\.length&&\(/);
-    var cells = match[1];
-    match = script.match(/\w+\.width&&(\w+)\.drawImage\(\w+,\w+-\w+\.width-10,10\);/);
-    split = script.split(match[0]);
-    return split[0]+match[0]+'Draw('+match[1]+','+cells+');'+split[1];
-}
+    // the injected point, overwriting the WebSocket constructor
+    window.WebSocket = function(url, protocols) {
+        console.log('Listen');
 
-function CenterOfMass(cells, prop){
-    var n = 0;
-    var d = 0;
-    for (var i in cells){
-        n += cells[i].size*cells[i].size * cells[i][prop];
-        d += cells[i].size*cells[i].size;
-    }
-    return n/d;
-}
+        var ws = new _WebSocket(url, protocols);
 
-var map = null;
-var last = {'x':0, 'y':0, 'color':'#000000', 'size':200};
+        refer(this, ws, 'binaryType');
+        refer(this, ws, 'bufferedAmount');
+        refer(this, ws, 'extensions');
+        refer(this, ws, 'protocol');
+        refer(this, ws, 'readyState');
+        refer(this, ws, 'url');
 
-window.Draw = function(oc, cells) {
-    var client_width = window.innerWidth, client_height = window.innerHeight;
-    var board_size = 11180;
-    
-    map && oc.drawImage(map, client_width-map.width-10, client_height-map.height-10);
-    map || (map = document.createElement("canvas"));
-    var c = Math.min(150, .3 * client_height, .3 * client_width) / board_size;
-    map.width = board_size * c;
-    map.height = board_size * c;
+        this.send = function(data){
+            return ws.send.call(ws, data);
+        };
 
-    mc = map.getContext("2d");
-    mc.scale(c, c);
-    mc.globalAlpha = .2;
-    mc.fillStyle = "#000000";
-    mc.fillRect(0, 0, board_size, board_size);
-    mc.globalAlpha = .4;
-    mc.lineWidth = 200;
-    mc.strokeStyle = "#000000";
-    mc.strokeRect(0, 0, board_size, board_size);
-    if (cells && cells[0]){
-        last.x = CenterOfMass(cells,'x');
-        last.y = CenterOfMass(cells,'y');
-        last.size = 200;
-        last.color = cells[0].color;
-    }
-    mc.beginPath();
-    mc.arc(last.x, last.y, last.size, 0, 2 * Math.PI, false);
-    mc.globalAlpha = .8;
-    mc.fillStyle = last.color;
-    mc.fill();
-    mc.lineWidth = 70;
-    mc.stroke();
-}   
+        this.close = function(code, reason){
+            return ws.close.call(ws, code, reason);
+        };
+
+        this.onopen = function(event){};
+        this.onclose = function(event){};
+        this.onerror = function(event){};
+        this.onmessage = function(event){};
+
+        ws.onopen = function(event) {
+            return this.onopen.call(ws, event);
+        }.bind(this);
+
+        ws.onmessage = function(event) {
+            extractPacket(event);
+            return this.onmessage.call(ws, event);
+        }.bind(this);
+
+        ws.onclose = function(event) {
+            return this.onclose.call(ws, event);
+        }.bind(this);
+
+        ws.onerror = function(event) {
+            return this.onerror.call(ws, event);
+        }.bind(this);
+    };
+
+    window.WebSocket.prototype = _WebSocket;
+
+    miniMapInit();
+})();
