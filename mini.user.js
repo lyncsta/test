@@ -38,39 +38,7 @@ function DrawBorders(c, dark)
         }        
 }
 
-function DrawMinimap(oc, cells) {
-    var client_width = window.innerWidth, client_height = window.innerHeight;
-    var board_size = 11180;
-    
-    map && oc.drawImage(map, client_width-map.width-10, client_height-map.height-10);
-    map || (map = document.createElement("canvas"));
-    var c = Math.min(150, .3 * client_height, .3 * client_width) / board_size;
-    map.width = board_size * c;
-    map.height = board_size * c;
 
-    mc = map.getContext("2d");
-    mc.scale(c, c);
-    mc.globalAlpha = .2;
-    mc.fillStyle = "#000000";
-    mc.fillRect(0, 0, board_size, board_size);
-    mc.globalAlpha = .4;
-    mc.lineWidth = 200;
-    mc.strokeStyle = "#000000";
-    mc.strokeRect(0, 0, board_size, board_size);
-    if (cells && cells[0]){
-        last.x = CenterOfMass(cells,'x');
-        last.y = CenterOfMass(cells,'y');
-        last.size = 200;
-        last.color = cells[0].color;
-    }
-    mc.beginPath();
-    mc.arc(last.x, last.y, last.size, 0, 2 * Math.PI, false);
-    mc.globalAlpha = .8;
-    mc.fillStyle = last.color;
-    mc.fill();
-    mc.lineWidth = 70;
-    mc.stroke();
-}    
 
 
 
