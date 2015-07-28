@@ -39,7 +39,37 @@ function DrawBorders(c, dark)
 }
 
 function DrawMinimap(oc, cells) {
+    var client_width = window.innerWidth, client_height = window.innerHeight;
+    var board_size = 11180;
     
+    map && oc.drawImage(map, client_width-map.width-10, client_height-map.height-10);
+    map || (map = document.createElement("canvas"));
+    var c = Math.min(150, .3 * client_height, .3 * client_width) / board_size;
+    map.width = board_size * c;
+    map.height = board_size * c;
+
+    mc = map.getContext("2d");
+    mc.scale(c, c);
+    mc.globalAlpha = .2;
+    mc.fillStyle = "#000000";
+    mc.fillRect(0, 0, board_size, board_size);
+    mc.globalAlpha = .4;
+    mc.lineWidth = 200;
+    mc.strokeStyle = "#000000";
+    mc.strokeRect(0, 0, board_size, board_size);
+    if (cells && cells[0]){
+        last.x = CenterOfMass(cells,'x');
+        last.y = CenterOfMass(cells,'y');
+        last.size = 200;
+        last.color = cells[0].color;
+    }
+    mc.beginPath();
+    mc.arc(last.x, last.y, last.size, 0, 2 * Math.PI, false);
+    mc.globalAlpha = .8;
+    mc.fillStyle = last.color;
+    mc.fill();
+    mc.lineWidth = 70;
+    mc.stroke();
 }    
 
 
@@ -580,7 +610,562 @@ function DrawMinimap(oc, cells) {
         this.Q = !!c;
         d && (this.s = d)
     }
-              
+    var aa = f.location.protocol,
+        Wa = "https:" == aa;
+    if (f.location.ancestorOrigins && f.location.ancestorOrigins.length && "https://apps.facebook.com" != f.location.ancestorOrigins[0]) f.top.location = "http://agar.io/";
+    else {
+        var na, g, C, r, s, M = null,
+            q = null,
+            t = 0,
+            u = 0,
+            G = [],
+            n = [],
+            A = {},
+            v = [],
+            I = [],
+            B = [],
+            U = 0,
+            V = 0,
+            Y = -1,
+            Z = -1,
+            cb = 0,
+            H = 0,
+            F = null,
+            ea = 0,
+            fa = 0,
+            ga = 1E4,
+            ha = 1E4,
+            k = 1,
+            w = null,
+            Pa = !0,
+            la = !0,
+            za = !1,
+            ua = !1,
+            J = 0,
+            ia = !1,
+            Qa = !1,
+            Q = t = ~~((ea + ga) / 2),
+            R = u = ~~((fa + ha) / 2),
+            S = 1,
+            N = "",
+            y = null,
+            ma = !1,
+            ta = !1,
+            ra = 0,
+            sa = 0,
+            ca = 0,
+            da =
+            0,
+            Ra = 0,
+            gb = ["#333333", "#FF3333", "#33FF33", "#3333FF"],
+            xa = !1,
+            E = 1,
+            Ca = "ontouchstart" in f && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+            ya = new Image;
+        ya.src = "img/split.png";
+        var Sa = document.createElement("canvas");
+        if ("undefined" == typeof console || "undefined" == typeof DataView || "undefined" == typeof WebSocket || null == Sa || null == Sa.getContext || null == f.localStorage) alert("You browser does not support this game, we recommend you to use Firefox to play this");
+        else {
+            var $ = null;
+            f.setNick = function(a) {
+                Ia();
+                F = a;
+                Ka();
+                J = 0
+            };
+            f.setRegion = W;
+            f.setSkins = function(a) {
+                Pa = a
+            };
+            f.setNames = function(a) {
+                la = a
+            };
+            f.setDarkTheme = function(a) {
+                ia = a
+            };
+            f.setColors = function(a) {
+                za = a
+            };
+            f.setShowMass = function(a) {
+                Qa = a
+            };
+            f.spectate = function() {
+                F = null;
+                D(1);
+                Ia()
+            };
+            f.setGameMode = function(a) {
+                a != N && (N = a, X())
+            };
+            f.setAcid = function(a) {
+                xa = a
+            };
+            null != f.localStorage && (null == f.localStorage.AB8 && (f.localStorage.AB8 = 0 + ~~(100 * Math.random())), Ra = +f.localStorage.AB8, f.ABGroup = Ra);
+            l.get(aa + "//gc.agar.io", function(a) {
+                var b = a.split(" ");
+                a = b[0];
+                b = b[1] || ""; - 1 == "DE IL PL HU BR AT UA".split(" ").indexOf(a) && Aa.push("nazi"); - 1 == ["UA"].indexOf(a) && Aa.push("ussr");
+                T.hasOwnProperty(a) && ("string" == typeof T[a] ? w || W(T[a]) : T[a].hasOwnProperty(b) && (w || W(T[a][b])))
+            }, "text");
+            setTimeout(function() {}, 3E5);
+            var T = {
+                AF: "JP-Tokyo",
+                AX: "EU-London",
+                AL: "EU-London",
+                DZ: "EU-London",
+                AS: "SG-Singapore",
+                AD: "EU-London",
+                AO: "EU-London",
+                AI: "US-Atlanta",
+                AG: "US-Atlanta",
+                AR: "BR-Brazil",
+                AM: "JP-Tokyo",
+                AW: "US-Atlanta",
+                AU: "SG-Singapore",
+                AT: "EU-London",
+                AZ: "JP-Tokyo",
+                BS: "US-Atlanta",
+                BH: "JP-Tokyo",
+                BD: "JP-Tokyo",
+                BB: "US-Atlanta",
+                BY: "EU-London",
+                BE: "EU-London",
+                BZ: "US-Atlanta",
+                BJ: "EU-London",
+                BM: "US-Atlanta",
+                BT: "JP-Tokyo",
+                BO: "BR-Brazil",
+                BQ: "US-Atlanta",
+                BA: "EU-London",
+                BW: "EU-London",
+                BR: "BR-Brazil",
+                IO: "JP-Tokyo",
+                VG: "US-Atlanta",
+                BN: "JP-Tokyo",
+                BG: "EU-London",
+                BF: "EU-London",
+                BI: "EU-London",
+                KH: "JP-Tokyo",
+                CM: "EU-London",
+                CA: "US-Atlanta",
+                CV: "EU-London",
+                KY: "US-Atlanta",
+                CF: "EU-London",
+                TD: "EU-London",
+                CL: "BR-Brazil",
+                CN: "CN-China",
+                CX: "JP-Tokyo",
+                CC: "JP-Tokyo",
+                CO: "BR-Brazil",
+                KM: "EU-London",
+                CD: "EU-London",
+                CG: "EU-London",
+                CK: "SG-Singapore",
+                CR: "US-Atlanta",
+                CI: "EU-London",
+                HR: "EU-London",
+                CU: "US-Atlanta",
+                CW: "US-Atlanta",
+                CY: "JP-Tokyo",
+                CZ: "EU-London",
+                DK: "EU-London",
+                DJ: "EU-London",
+                DM: "US-Atlanta",
+                DO: "US-Atlanta",
+                EC: "BR-Brazil",
+                EG: "EU-London",
+                SV: "US-Atlanta",
+                GQ: "EU-London",
+                ER: "EU-London",
+                EE: "EU-London",
+                ET: "EU-London",
+                FO: "EU-London",
+                FK: "BR-Brazil",
+                FJ: "SG-Singapore",
+                FI: "EU-London",
+                FR: "EU-London",
+                GF: "BR-Brazil",
+                PF: "SG-Singapore",
+                GA: "EU-London",
+                GM: "EU-London",
+                GE: "JP-Tokyo",
+                DE: "EU-London",
+                GH: "EU-London",
+                GI: "EU-London",
+                GR: "EU-London",
+                GL: "US-Atlanta",
+                GD: "US-Atlanta",
+                GP: "US-Atlanta",
+                GU: "SG-Singapore",
+                GT: "US-Atlanta",
+                GG: "EU-London",
+                GN: "EU-London",
+                GW: "EU-London",
+                GY: "BR-Brazil",
+                HT: "US-Atlanta",
+                VA: "EU-London",
+                HN: "US-Atlanta",
+                HK: "JP-Tokyo",
+                HU: "EU-London",
+                IS: "EU-London",
+                IN: "JP-Tokyo",
+                ID: "JP-Tokyo",
+                IR: "JP-Tokyo",
+                IQ: "JP-Tokyo",
+                IE: "EU-London",
+                IM: "EU-London",
+                IL: "JP-Tokyo",
+                IT: "EU-London",
+                JM: "US-Atlanta",
+                JP: "JP-Tokyo",
+                JE: "EU-London",
+                JO: "JP-Tokyo",
+                KZ: "JP-Tokyo",
+                KE: "EU-London",
+                KI: "SG-Singapore",
+                KP: "JP-Tokyo",
+                KR: "JP-Tokyo",
+                KW: "JP-Tokyo",
+                KG: "JP-Tokyo",
+                LA: "JP-Tokyo",
+                LV: "EU-London",
+                LB: "JP-Tokyo",
+                LS: "EU-London",
+                LR: "EU-London",
+                LY: "EU-London",
+                LI: "EU-London",
+                LT: "EU-London",
+                LU: "EU-London",
+                MO: "JP-Tokyo",
+                MK: "EU-London",
+                MG: "EU-London",
+                MW: "EU-London",
+                MY: "JP-Tokyo",
+                MV: "JP-Tokyo",
+                ML: "EU-London",
+                MT: "EU-London",
+                MH: "SG-Singapore",
+                MQ: "US-Atlanta",
+                MR: "EU-London",
+                MU: "EU-London",
+                YT: "EU-London",
+                MX: "US-Atlanta",
+                FM: "SG-Singapore",
+                MD: "EU-London",
+                MC: "EU-London",
+                MN: "JP-Tokyo",
+                ME: "EU-London",
+                MS: "US-Atlanta",
+                MA: "EU-London",
+                MZ: "EU-London",
+                MM: "JP-Tokyo",
+                NA: "EU-London",
+                NR: "SG-Singapore",
+                NP: "JP-Tokyo",
+                NL: "EU-London",
+                NC: "SG-Singapore",
+                NZ: "SG-Singapore",
+                NI: "US-Atlanta",
+                NE: "EU-London",
+                NG: "EU-London",
+                NU: "SG-Singapore",
+                NF: "SG-Singapore",
+                MP: "SG-Singapore",
+                NO: "EU-London",
+                OM: "JP-Tokyo",
+                PK: "JP-Tokyo",
+                PW: "SG-Singapore",
+                PS: "JP-Tokyo",
+                PA: "US-Atlanta",
+                PG: "SG-Singapore",
+                PY: "BR-Brazil",
+                PE: "BR-Brazil",
+                PH: "JP-Tokyo",
+                PN: "SG-Singapore",
+                PL: "EU-London",
+                PT: "EU-London",
+                PR: "US-Atlanta",
+                QA: "JP-Tokyo",
+                RE: "EU-London",
+                RO: "EU-London",
+                RU: "RU-Russia",
+                RW: "EU-London",
+                BL: "US-Atlanta",
+                SH: "EU-London",
+                KN: "US-Atlanta",
+                LC: "US-Atlanta",
+                MF: "US-Atlanta",
+                PM: "US-Atlanta",
+                VC: "US-Atlanta",
+                WS: "SG-Singapore",
+                SM: "EU-London",
+                ST: "EU-London",
+                SA: "EU-London",
+                SN: "EU-London",
+                RS: "EU-London",
+                SC: "EU-London",
+                SL: "EU-London",
+                SG: "JP-Tokyo",
+                SX: "US-Atlanta",
+                SK: "EU-London",
+                SI: "EU-London",
+                SB: "SG-Singapore",
+                SO: "EU-London",
+                ZA: "EU-London",
+                SS: "EU-London",
+                ES: "EU-London",
+                LK: "JP-Tokyo",
+                SD: "EU-London",
+                SR: "BR-Brazil",
+                SJ: "EU-London",
+                SZ: "EU-London",
+                SE: "EU-London",
+                CH: "EU-London",
+                SY: "EU-London",
+                TW: "JP-Tokyo",
+                TJ: "JP-Tokyo",
+                TZ: "EU-London",
+                TH: "JP-Tokyo",
+                TL: "JP-Tokyo",
+                TG: "EU-London",
+                TK: "SG-Singapore",
+                TO: "SG-Singapore",
+                TT: "US-Atlanta",
+                TN: "EU-London",
+                TR: "TK-Turkey",
+                TM: "JP-Tokyo",
+                TC: "US-Atlanta",
+                TV: "SG-Singapore",
+                UG: "EU-London",
+                UA: "EU-London",
+                AE: "EU-London",
+                GB: "EU-London",
+                US: {
+                    AL: "US-Atlanta",
+                    AK: "US-Fremont",
+                    AZ: "US-Fremont",
+                    AR: "US-Atlanta",
+                    CA: "US-Fremont",
+                    CO: "US-Fremont",
+                    CT: "US-Atlanta",
+                    DE: "US-Atlanta",
+                    FL: "US-Atlanta",
+                    GA: "US-Atlanta",
+                    HI: "US-Fremont",
+                    ID: "US-Fremont",
+                    IL: "US-Atlanta",
+                    IN: "US-Atlanta",
+                    IA: "US-Atlanta",
+                    KS: "US-Atlanta",
+                    KY: "US-Atlanta",
+                    LA: "US-Atlanta",
+                    ME: "US-Atlanta",
+                    MD: "US-Atlanta",
+                    MA: "US-Atlanta",
+                    MI: "US-Atlanta",
+                    MN: "US-Fremont",
+                    MS: "US-Atlanta",
+                    MO: "US-Atlanta",
+                    MT: "US-Fremont",
+                    NE: "US-Fremont",
+                    NV: "US-Fremont",
+                    NH: "US-Atlanta",
+                    NJ: "US-Atlanta",
+                    NM: "US-Fremont",
+                    NY: "US-Atlanta",
+                    NC: "US-Atlanta",
+                    ND: "US-Fremont",
+                    OH: "US-Atlanta",
+                    OK: "US-Atlanta",
+                    OR: "US-Fremont",
+                    PA: "US-Atlanta",
+                    RI: "US-Atlanta",
+                    SC: "US-Atlanta",
+                    SD: "US-Fremont",
+                    TN: "US-Atlanta",
+                    TX: "US-Atlanta",
+                    UT: "US-Fremont",
+                    VT: "US-Atlanta",
+                    VA: "US-Atlanta",
+                    WA: "US-Fremont",
+                    WV: "US-Atlanta",
+                    WI: "US-Atlanta",
+                    WY: "US-Fremont",
+                    DC: "US-Atlanta",
+                    AS: "US-Atlanta",
+                    GU: "US-Atlanta",
+                    MP: "US-Atlanta",
+                    PR: "US-Atlanta",
+                    UM: "US-Atlanta",
+                    VI: "US-Atlanta"
+                },
+                UM: "SG-Singapore",
+                VI: "US-Atlanta",
+                UY: "BR-Brazil",
+                UZ: "JP-Tokyo",
+                VU: "SG-Singapore",
+                VE: "BR-Brazil",
+                VN: "JP-Tokyo",
+                WF: "SG-Singapore",
+                EH: "EU-London",
+                YE: "JP-Tokyo",
+                ZM: "EU-London",
+                ZW: "EU-London"
+            };
+            f.connect = Ja;
+            var ba = 500,
+                Ma = -1,
+                Na = -1,
+                x = null,
+                z = 1,
+                ja = null,
+                K = {},
+                Aa = "poland;usa;china;russia;canada;australia;spain;brazil;germany;ukraine;france;sweden;hitler;north korea;south korea;japan;united kingdom;earth;greece;latvia;lithuania;estonia;finland;norway;cia;maldivas;austria;nigeria;reddit;yaranaika;confederate;9gag;indiana;4chan;italy;bulgaria;tumblr;2ch.hk;hong kong;portugal;jamaica;german empire;mexico;sanik;switzerland;croatia;chile;indonesia;bangladesh;thailand;iran;iraq;peru;moon;botswana;bosnia;netherlands;european union;taiwan;pakistan;hungary;satanist;qing dynasty;matriarchy;patriarchy;feminism;ireland;texas;facepunch;prodota;cambodia;steam;piccolo;ea;india;kc;denmark;quebec;ayy lmao;sealand;bait;tsarist russia;origin;vinesauce;stalin;belgium;luxembourg;stussy;prussia;8ch;argentina;scotland;sir;romania;belarus;wojak;doge;nasa;byzantium;imperial japan;french kingdom;somalia;turkey;mars;pokerface;8;irs;receita federal;facebook".split(";"),
+                hb = ["8", "nasa"],
+                ib = ["m'blob"];
+            va.prototype = {
+                id: 0,
+                a: null,
+                l: null,
+                name: null,
+                k: null,
+                K: null,
+                x: 0,
+                y: 0,
+                size: 0,
+                p: 0,
+                q: 0,
+                o: 0,
+                F: 0,
+                G: 0,
+                n: 0,
+                W: 0,
+                M: 0,
+                ja: 0,
+                ba: 0,
+                A: !1,
+                d: !1,
+                j: !1,
+                N: !0,
+                T: function() {
+                    var a;
+                    for (a = 0; a < v.length; a++)
+                        if (v[a] == this) {
+                            v.splice(a, 1);
+                            break
+                        }
+                    delete A[this.id];
+                    a = n.indexOf(this); - 1 != a && (ua = !0, n.splice(a, 1));
+                    a = G.indexOf(this.id); - 1 != a && G.splice(a, 1);
+                    this.A = !0;
+                    I.push(this)
+                },
+                h: function() {
+                    return Math.max(~~(.3 * this.size), 24)
+                },
+                Z: function(a) {
+                    if (this.name = a) null == this.k ? this.k = new ka(this.h(), "#FFFFFF", !0, "#000000") : this.k.I(this.h()), this.k.u(this.name)
+                },
+                S: function() {
+                    for (var a = this.D(); this.a.length > a;) {
+                        var b = ~~(Math.random() * this.a.length);
+                        this.a.splice(b, 1);
+                        this.l.splice(b, 1)
+                    }
+                    0 == this.a.length && 0 < a && (this.a.push({
+                        R: this,
+                        e: this.size,
+                        x: this.x,
+                        y: this.y
+                    }), this.l.push(Math.random() - .5));
+                    for (; this.a.length < a;) {
+                        var b = ~~(Math.random() * this.a.length),
+                            c = this.a[b];
+                        this.a.splice(b, 0, {
+                            R: this,
+                            e: c.e,
+                            x: c.x,
+                            y: c.y
+                        });
+                        this.l.splice(b, 0, this.l[b])
+                    }
+                },
+                D: function() {
+                    if (0 == this.id) return 16;
+                    var a = 10;
+                    20 > this.size && (a = 0);
+                    this.d && (a = 30);
+                    var b = this.size;
+                    this.d || (b *= k);
+                    b *= z;
+                    this.W & 32 && (b *= .25);
+                    return ~~Math.max(b, a)
+                },
+                ha: function() {
+                    this.S();
+                    for (var a = this.a, b = this.l, c = a.length, d = 0; d < c; ++d) {
+                        var e = b[(d - 1 + c) % c],
+                            m = b[(d + 1) % c];
+                        b[d] += (Math.random() - .5) * (this.j ? 3 : 1);
+                        b[d] *= .7;
+                        10 < b[d] && (b[d] = 10); - 10 > b[d] && (b[d] = -10);
+                        b[d] = (e + m + 8 * b[d]) / 10
+                    }
+                    for (var h = this, g = this.d ? 0 : (this.id / 1E3 + H / 1E4) % (2 * Math.PI), d = 0; d < c; ++d) {
+                        var f = a[d].e,
+                            e = a[(d - 1 + c) % c].e,
+                            m = a[(d + 1) % c].e;
+                        if (15 < this.size && null != M && 20 < this.size * k && 0 != this.id) {
+                            var l = !1,
+                                n = a[d].x,
+                                q = a[d].y;
+                            M.ia(n -
+                                5, q - 5, 10, 10,
+                                function(a) {
+                                    a.R != h && 25 > (n - a.x) * (n - a.x) + (q - a.y) * (q - a.y) && (l = !0)
+                                });
+                            !l && (a[d].x < ea || a[d].y < fa || a[d].x > ga || a[d].y > ha) && (l = !0);
+                            l && (0 < b[d] && (b[d] = 0), b[d] -= 1)
+                        }
+                        f += b[d];
+                        0 > f && (f = 0);
+                        f = this.j ? (19 * f + this.size) / 20 : (12 * f + this.size) / 13;
+                        a[d].e = (e + m + 8 * f) / 10;
+                        e = 2 * Math.PI / c;
+                        m = this.a[d].e;
+                        this.d && 0 == d % 2 && (m += 5);
+                        a[d].x = this.x + Math.cos(e * d + g) * m;
+                        a[d].y = this.y + Math.sin(e * d + g) * m
+                    }
+                },
+                L: function() {
+                    if (0 == this.id) return 1;
+                    var a;
+                    a = (H - this.M) / 120;
+                    a = 0 > a ? 0 : 1 < a ? 1 : a;
+                    var b = 0 > a ? 0 : 1 < a ? 1 : a;
+                    this.h();
+                    if (this.A && 1 <= b) {
+                        var c = I.indexOf(this); - 1 != c && I.splice(c, 1)
+                    }
+                    this.x = a * (this.F - this.p) + this.p;
+                    this.y = a * (this.G - this.q) + this.q;
+                    this.size = b * (this.n - this.o) + this.o;
+                    return b
+                },
+                J: function() {
+                    return 0 == this.id ? !0 : this.x + this.size + 40 < t - r / 2 / k || this.y + this.size + 40 < u - s / 2 / k || this.x - this.size - 40 > t + r / 2 / k || this.y - this.size - 40 > u + s / 2 / k ? !1 : !0
+                },
+                isTeamColor: function(cells) {
+                    for (var e = cells[0].color, t = 0; 3 > t; ++t) {
+                        var n = e.substring(2 * t + 1, 2 * t + 3).toLowerCase();
+                        if ("ff" === n) {
+                            var i = this.color.substring(2 * t + 1, 2 * t + 3).toLowerCase();
+                            return i === n ? true : false
+                        }
+                    }
+                    return false
+                },                     
                 getTargetColor: function(cells, game_mode, is_virus){
                     var color = {'fill':this.color, 'stroke':this.color};
                     var mass = this.size * this.size;
