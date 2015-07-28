@@ -9,7 +9,7 @@
 // @grant        none
 // ==/UserScript==
 
-var show_targeting_colors = true;
+var show_targeting_colors = false;
 var allow_zoom = true;
 var show_borders = true;
 var show_opponent_size = true;
